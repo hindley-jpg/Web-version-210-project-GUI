@@ -1,0 +1,315 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,500;0,600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:16px;padding:1.25rem 1rem;align-items:start}
+.left{min-width:0}
+.header{margin-bottom:1rem}
+.header h1{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--color-text-primary);margin-bottom:2px}
+.header p{font-size:11px;color:var(--color-text-secondary)}
+.tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem}
+.tab{font-family:'DM Mono',monospace;font-size:11px;padding:4px 9px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.tab:hover{background:var(--color-background-secondary)}
+.tab.active{background:#042C53;color:#E6F1FB;border-color:#042C53}
+.sem-label{font-size:10px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:1rem}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px 11px;cursor:pointer;transition:border .15s,opacity .15s;background:var(--color-background-primary);position:relative;min-height:82px;display:flex;flex-direction:column;justify-content:space-between}
+.card:hover{border-color:var(--color-border-primary)}
+.card.passed{background:#EAF3DE;border-color:#C0DD97}
+.card.planned{border:2px solid #378ADD;background:#E6F1FB}
+.card.locked{opacity:.5}
+.cdot{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%}
+.dot-pass{background:#639922}.dot-open{background:#888780}.dot-lock{background:#E24B4A}.dot-plan{background:#378ADD}
+.ccode{font-size:10px;font-weight:500;color:var(--color-text-secondary);margin-bottom:3px}
+.cname{font-size:11px;color:var(--color-text-primary);line-height:1.35;flex:1}
+.ccred{font-size:10px;color:var(--color-text-tertiary);margin-top:5px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.9rem}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--color-text-secondary)}
+.ld{width:7px;height:7px;border-radius:50%}
+.prog-wrap{margin-top:.5rem}
+.prog-bar{height:5px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+.prog-fill{height:100%;background:#639922;border-radius:3px;transition:width .35s}
+.prog-lbl{font-size:10px;color:var(--color-text-secondary);margin-top:4px}
+.sidebar{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-primary);padding:12px;position:sticky;top:12px}
+.sb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sb-title{font-family:'Fraunces',serif;font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.sb-credits{font-size:11px;color:var(--color-text-secondary)}
+.sb-credits span{font-weight:500;color:var(--color-text-primary)}
+.sb-empty{font-size:11px;color:var(--color-text-tertiary);text-align:center;padding:1.5rem 0;line-height:1.6}
+.plan-item{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.plan-item:last-child{border-bottom:none}
+.pi-code{font-size:10px;font-weight:500;color:var(--color-text-secondary)}
+.pi-name{font-size:11px;color:var(--color-text-primary);line-height:1.3}
+.pi-cr{font-size:10px;color:var(--color-text-tertiary)}
+.pi-remove{font-size:13px;color:var(--color-text-tertiary);cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0;margin-top:1px}
+.pi-remove:hover{color:var(--color-text-primary)}
+.sb-cap{margin-top:10px;font-size:10px;padding:5px 8px;border-radius:var(--border-radius-md);text-align:center}
+.sb-cap.ok{background:#EAF3DE;color:#3B6D11;border:0.5px solid #C0DD97}
+.sb-cap.warn{background:#FAEEDA;color:#854F0B;border:0.5px solid #EF9F27}
+.sb-cap.over{background:#FCEBEB;color:#A32D2D;border:0.5px solid #F7C1C1}
+.modal-wrap{min-height:300px;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;border-radius:var(--border-radius-lg);margin-top:8px}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);padding:1.25rem;width:min(320px,92%)}
+.mh2{font-family:'Fraunces',serif;font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.msub{font-size:11px;color:var(--color-text-secondary);margin-bottom:.9rem}
+.pr-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.pr-row:last-child{border-bottom:none}
+.pr-code{font-size:11px;font-weight:500;color:var(--color-text-primary)}
+.pr-name{font-size:10px;color:var(--color-text-secondary)}
+.btn-y{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:var(--border-radius-md);border:0.5px solid #C0DD97;background:#EAF3DE;color:#3B6D11;cursor:pointer}
+.btn-n{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:var(--border-radius-md);border:0.5px solid #F7C1C1;background:#FCEBEB;color:#A32D2D;cursor:pointer}
+.pbadge{font-size:10px;padding:2px 7px;border-radius:var(--border-radius-md);background:#EAF3DE;color:#3B6D11;border:0.5px solid #C0DD97}
+.mactions{display:flex;gap:7px;margin-top:.9rem}
+.btn-prim{font-family:'DM Mono',monospace;font-size:11px;padding:6px 12px;border-radius:var(--border-radius-md);border:none;background:#042C53;color:#E6F1FB;cursor:pointer;flex:1}
+.btn-prim:disabled{opacity:.4;cursor:default}
+.btn-sec{font-family:'DM Mono',monospace;font-size:11px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.btn-mark{font-family:'DM Mono',monospace;font-size:11px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid #C0DD97;background:#EAF3DE;color:#3B6D11;cursor:pointer}
+.banner{font-size:11px;padding:7px 10px;border-radius:var(--border-radius-md);margin-bottom:.75rem}
+.banner.ok{background:#EAF3DE;color:#3B6D11;border:0.5px solid #C0DD97}
+.banner.bad{background:#FCEBEB;color:#A32D2D;border:0.5px solid #F7C1C1}
+.banner.info{background:#E6F1FB;color:#185FA5;border:0.5px solid #85B7EB}
+.banner.warn{background:#FAEEDA;color:#854F0B;border:0.5px solid #EF9F27}
+</style>
+
+<h2 class="sr-only", style="margin:1.5rem;">CUA Computer Science course planner. <br>Browse courses by semester, click any tile to check prerequisites, and build your plan in the right column.<br/></h2>
+
+<div class="app">
+  <div class="left">
+    <div class="header">
+      <h1>CS Course Planner</h1>
+      <p>Click any course — locked or open — to check prerequisites</p>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#639922"></div>passed</div>
+      <div class="li"><div class="ld" style="background:#378ADD"></div>in plan</div>
+      <div class="li"><div class="ld" style="background:#888780"></div>open</div>
+      <div class="li"><div class="ld" style="background:#E24B4A"></div>prereqs unmet</div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="sem-label" id="sem-label"></div>
+    <div class="grid" id="grid"></div>
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="prog-lbl" id="prog-lbl">0 of 0 passed</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="sb-title">My plan</div>
+      <div class="sb-credits"><span id="plan-cr">0</span> / 18 cr</div>
+    </div>
+    <div id="plan-list"><div class="sb-empty">No courses added yet.<br>Click any tile to start.</div></div>
+    <div id="cap-badge" class="sb-cap" style="display:none"></div>
+  </div>
+</div>
+
+<div id="modal-area"></div>
+
+<script>
+const COURSES=[
+  {code:"MATH 121",name:"Calculus I",credits:4,semester:"Year 1 Fall",prerequisites:[],isPassed:false},
+  {code:"CSC 120",name:"Intro to Computational Thinking",credits:3,semester:"Year 1 Fall",prerequisites:[],isPassed:false},
+  {code:"CSC 123",name:"Intro to Computer Programming",credits:3,semester:"Year 1 Fall",prerequisites:[],isPassed:false},
+  {code:"PHIL 201",name:"Classical Mind",credits:3,semester:"Year 1 Fall",prerequisites:[],isPassed:false},
+  {code:"ENG 101",name:"Rhetoric and Composition",credits:3,semester:"Year 1 Fall",prerequisites:[],isPassed:false},
+  {code:"MATH 122",name:"Calculus II",credits:4,semester:"Year 1 Spring",prerequisites:["MATH 121"],isPassed:false},
+  {code:"CSC 210",name:"Discrete Mathematics",credits:3,semester:"Year 1 Spring",prerequisites:["CSC 123"],isPassed:false},
+  {code:"CSC 223",name:"Object Oriented Programming",credits:3,semester:"Year 1 Spring",prerequisites:["CSC 123"],isPassed:false},
+  {code:"PHIL 202",name:"Modern Mind",credits:3,semester:"Year 1 Spring",prerequisites:["PHIL 201"],isPassed:false},
+  {code:"TRS 201",name:"Faith Seeking Understanding",credits:3,semester:"Year 1 Spring",prerequisites:[],isPassed:false},
+  {code:"CSC 212",name:"Theory of Computing",credits:3,semester:"Year 2 Fall",prerequisites:["CSC 210"],isPassed:false},
+  {code:"CSC 280",name:"Data Structures",credits:3,semester:"Year 2 Fall",prerequisites:["CSC 223"],isPassed:false},
+  {code:"CSC 370",name:"Concepts of Programming Languages",credits:3,semester:"Year 2 Fall",prerequisites:["CSC 223"],isPassed:false},
+  {code:"TRS 202",name:"The Church and the Human Person",credits:3,semester:"Year 2 Fall",prerequisites:["TRS 201"],isPassed:false},
+  {code:"CSC 323",name:"Intro to Computer Networks",credits:3,semester:"Year 2 Spring",prerequisites:["CSC 280"],isPassed:false},
+  {code:"CSC 326",name:"Switching Circuits & Logic Design",credits:3,semester:"Year 2 Spring",prerequisites:["CSC 212"],isPassed:false},
+  {code:"CSC 327",name:"Switching Circuits Lab",credits:1,semester:"Year 2 Spring",prerequisites:["CSC 326"],isPassed:false},
+  {code:"CSC 322",name:"Intro to Computer Graphics",credits:3,semester:"Year 2 Spring",prerequisites:["CSC 280"],isPassed:false},
+  {code:"MATH 309",name:"Probability and Statistics",credits:3,semester:"Year 3 Fall",prerequisites:["MATH 122"],isPassed:false},
+  {code:"CSC 363",name:"Software Engineering",credits:3,semester:"Year 3 Fall",prerequisites:["CSC 280"],isPassed:false},
+  {code:"CSC 390",name:"Computer Organization & Architecture",credits:3,semester:"Year 3 Fall",prerequisites:["CSC 326"],isPassed:false},
+  {code:"CSC 442",name:"Intro to Database Systems",credits:3,semester:"Year 3 Fall",prerequisites:["CSC 280"],isPassed:false},
+  {code:"PHIL 362",name:"Professional Ethics in Engineering",credits:3,semester:"Year 3 Fall",prerequisites:["PHIL 202"],isPassed:false},
+  {code:"CSC 306",name:"Intro to Operating Systems",credits:3,semester:"Year 3 Spring",prerequisites:["CSC 390"],isPassed:false},
+  {code:"CSC 409",name:"Web Design & Programming",credits:3,semester:"Year 3 Spring",prerequisites:["CSC 323"],isPassed:false},
+  {code:"MATH",name:"Mathematics Elective",credits:3,semester:"Year 3 Spring",isPassed:false},
+  {code:"CSC",name:"Computer Science Elective",credits:3,semester:"Year 3 Spring",isPassed:false},
+  {code:"LS",name:"Liberal Studies",credits:3,semester:"Year 3 Spring",isPassed:false},
+  {code:"CSC 441",name:"Senior Design I",credits:3,semester:"Year 4 Fall",prerequisites:["CSC 363"],isPassed:false},
+  {code:"CSC 411",name:"Analysis of Algorithms",credits:3,semester:"Year 4 Fall",prerequisites:["CSC 212","CSC 280"],isPassed:false},
+  {code:"MATH",name:"Mathematics Elective",credits:3,semester:"Year 4 Fall",isPassed:false},
+  {code:"LS",name:"Liberal Studies",credits:3,semester:"Year 4 Fall",isPassed:false},
+  {code:"CSC",name:"Computer Science Elective",credits:3,semester:"Year 4 Fall",isPassed:false},
+  {code:"CSC 406",name:"Intro to Secure Computing",credits:3,semester:"Year 4 Spring",prerequisites:["CSC 306"],isPassed:false},
+  {code:"CSC 442B",name:"Senior Design II",credits:3,semester:"Year 4 Spring",prerequisites:["CSC 441"],isPassed:false},
+  {code:"CSC",name:"Computer Science Elective",credits:3,semester:"Year 4 Spring",isPassed:false},
+  {code:"CSC",name:"Computer Science Elective",credits:3,semester:"Year 4 Spring",isPassed:false},
+  {code:"MATH",name:"Mathematics Elective",credits:3,semester:"Year 4 Spring",isPassed:false},
+];
+const SEMS=["Year 1 Fall","Year 1 Spring","Year 2 Fall","Year 2 Spring","Year 3 Fall","Year 3 Spring","Year 4 Fall","Year 4 Spring"];
+let activeSem=SEMS[0];
+const cm={};
+COURSES.forEach(c=>cm[c.code]=c);
+const planned=new Set();
+
+function markChainPassed(code){
+  const c=cm[code];if(!c)return;
+  c.isPassed=true;
+  c.prerequisites.forEach(p=>markChainPassed(p));
+}
+function prereqsMet(c){return c.prerequisites.every(p=>cm[p]&&cm[p].isPassed)}
+function planCredits(){let t=0;planned.forEach(code=>{const c=cm[code];if(c)t+=c.credits});return t}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=SEMS.map(s=>
+    `<button class="tab${s===activeSem?' active':''}" onclick="setSem('${s}')">${s}</button>`
+  ).join('');
+}
+function setSem(s){activeSem=s;renderTabs();renderGrid();}
+
+function renderGrid(){
+  document.getElementById('sem-label').textContent=activeSem;
+  const sem=COURSES.filter(c=>c.semester===activeSem);
+  document.getElementById('grid').innerHTML=sem.map(c=>{
+    const met=prereqsMet(c);
+    const inPlan=planned.has(c.code);
+    let cls='card',dot='dot-open';
+    if(c.isPassed){cls+=' passed';dot='dot-pass';}
+    else if(inPlan){cls+=' planned';dot='dot-plan';}
+    else if(!met){cls+=' locked';dot='dot-lock';}
+    return `<div class="${cls}" onclick="openModal('${c.code}')">
+      <div class="cdot ${dot}"></div>
+      <div><div class="ccode">${c.code}</div><div class="cname">${c.name}</div></div>
+      <div class="ccred">${c.credits} cr</div>
+    </div>`;
+  }).join('');
+  renderProgress();
+}
+
+function renderProgress(){
+  const total=COURSES.length,passed=COURSES.filter(c=>c.isPassed).length;
+  const pct=Math.round(passed/total*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-lbl').textContent=`${passed} of ${total} passed (${pct}%)`;
+}
+
+function renderPlan(){
+  const cr=planCredits();
+  document.getElementById('plan-cr').textContent=cr;
+  const list=document.getElementById('plan-list');
+  if(planned.size===0){
+    list.innerHTML='<div class="sb-empty">No courses added yet.<br>Click any tile to start.</div>';
+    document.getElementById('cap-badge').style.display='none';
+    return;
+  }
+  list.innerHTML=[...planned].map(code=>{
+    const c=cm[code];if(!c)return'';
+    return `<div class="plan-item">
+      <div>
+        <div class="pi-code">${c.code}</div>
+        <div class="pi-name">${c.name}</div>
+        <div class="pi-cr">${c.credits} cr</div>
+      </div>
+      <div class="pi-remove" onclick="removePlan('${code}')" title="remove">&#x2715;</div>
+    </div>`;
+  }).join('');
+  const badge=document.getElementById('cap-badge');
+  badge.style.display='block';
+  if(cr>18){badge.className='sb-cap over';badge.textContent=`${cr} cr — over 18 credit cap`;}
+  else if(cr>=15){badge.className='sb-cap ok';badge.textContent=`${cr} cr — within limit`;}
+  else{badge.className='sb-cap warn';badge.textContent=`${cr} cr — consider adding more`;}
+}
+
+function removePlan(code){planned.delete(code);renderPlan();renderGrid();}
+
+function openModal(code){
+  const c=cm[code];
+  const area=document.getElementById('modal-area');
+
+  if(c.isPassed){
+    area.innerHTML=`<div class="modal-wrap"><div class="modal">
+      <div class="mh2">${c.code}</div>
+      <div class="msub">${c.name} &middot; ${c.credits} cr</div>
+      <div class="banner ok">Already marked as passed</div>
+      <div class="mactions"><button class="btn-sec" onclick="closeModal()">close</button></div>
+    </div></div>`;
+    return;
+  }
+
+  const met=prereqsMet(c);
+  const inPlan=planned.has(code);
+
+  let prereqHTML='<div style="margin-bottom:.75rem">';
+  if(c.prerequisites.length===0){
+    prereqHTML+=`<div style="font-size:11px;color:var(--color-text-secondary)">No prerequisites required.</div>`;
+  } else {
+    prereqHTML+=c.prerequisites.map(p=>{
+      const pr=cm[p];if(!pr)return'';
+      if(pr.isPassed){
+        return `<div class="pr-row"><div><div class="pr-code">${pr.code}</div><div class="pr-name">${pr.name}</div></div><span class="pbadge">passed</span></div>`;
+      }
+      return `<div class="pr-row" id="pr-${p.replace(/\s/g,'-')}">
+        <div><div class="pr-code">${pr.code}</div><div class="pr-name">${pr.name}</div></div>
+        <div style="display:flex;gap:4px">
+          <button class="btn-y" onclick="confirmPrereq('${p}','${code}')">yes</button>
+          <button class="btn-n" onclick="denyPrereq('${p}','${code}')">no</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  prereqHTML+='</div>';
+
+  let bannerText, bannerCls;
+  if(!met){bannerText='Have you passed the prerequisites below?';bannerCls='warn';}
+  else if(inPlan){bannerText='Already in your plan';bannerCls='info';}
+  else{bannerText='Eligible to enroll';bannerCls='ok';}
+
+  area.innerHTML=`<div class="modal-wrap"><div class="modal">
+    <div class="mh2">${c.code}</div>
+    <div class="msub">${c.name} &middot; ${c.credits} cr &middot; ${c.semester}</div>
+    <div class="banner ${bannerCls}" id="elig-banner">${bannerText}</div>
+    ${prereqHTML}
+    <div class="mactions">
+      <button class="btn-prim" id="add-btn" onclick="addAndClose('${code}')" ${met&&!inPlan?'':'disabled'}>${inPlan?'In plan':'+ Add to plan'}</button>
+      <button class="btn-mark" onclick="markPassedAndClose('${code}')">Mark passed</button>
+      <button class="btn-sec" onclick="closeModal()">close</button>
+    </div>
+  </div></div>`;
+}
+
+function confirmPrereq(prereqCode,courseCode){
+  markChainPassed(prereqCode);
+  renderGrid();
+  openModal(courseCode);
+}
+
+function denyPrereq(prereqCode,courseCode){
+  const row=document.getElementById('pr-'+prereqCode.replace(/\s/g,'-'));
+  if(row)row.style.opacity='.35';
+  const banner=document.getElementById('elig-banner');
+  if(banner){banner.className='banner bad';banner.textContent=`Not eligible — ${prereqCode} not passed`;}
+  const btn=document.getElementById('add-btn');
+  if(btn){btn.disabled=true;}
+}
+
+function addAndClose(code){
+  planned.add(code);
+  renderPlan();
+  renderGrid();
+  closeModal();
+}
+
+function markPassedAndClose(code){
+  markChainPassed(code);
+  planned.delete(code);
+  renderPlan();
+  renderGrid();
+  closeModal();
+}
+
+function closeModal(){document.getElementById('modal-area').innerHTML='';}
+
+renderTabs();
+renderGrid();
+renderPlan();
+</script>
